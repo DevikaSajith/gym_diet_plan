@@ -1,0 +1,61 @@
+{% extends 'diet_app/base.html' %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 0 auto;">
+    <h2 style="text-align: center; margin-bottom: 2rem;">Calorie Finder</h2>
+
+    <div class="card">
+        <form method="post">
+            {% csrf_token %}
+
+            <div>
+                <label for="{{ form.food_item.id_for_label }}">Food Item Name</label>
+                {{ form.food_item }}
+            </div>
+
+            <div>
+                <label for="{{ form.weight.id_for_label }}">Weight (grams)</label>
+                {{ form.weight }}
+            </div>
+
+            <button type="submit" class="btn" style="width: 100%; margin-top: 1rem;">Find Calories</button>
+        </form>
+    </div>
+
+    {% if result %}
+    <div class="result-box" style="text-align: center;">
+        <h3 style="color: var(--primary); font-size: 2rem;">{{ result.calories }} kcal</h3>
+        <p style="color: var(--text-secondary); margin-top: 0.5rem;">
+            in {{ result.weight }}g of <strong>{{ result.food }}</strong>
+        </p>
+    </div>
+    {% endif %}
+
+    {% if suggestions %}
+    <div style="margin-top: 2rem;">
+        <h3>Did you mean?</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 1rem;">We couldn't find an exact match, but found these
+            similar items:</p>
+        <div class="grid" style="grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem;">
+            {% for item in suggestions %}
+            <form method="post" style="margin: 0;">
+                {% csrf_token %}
+                <input type="hidden" name="food_item" value="{{ item }}">
+                <input type="hidden" name="weight" value="{{ form.weight.value|default:'100' }}">
+                <button type="submit" class="btn"
+                    style="width: 100%; background: #1e293b; border: 1px solid var(--primary); font-size: 0.9rem; padding: 0.5rem;">
+                    {{ item|title }}
+                </button>
+            </form>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if error %}
+    <div class="error-box">
+        <strong>Error:</strong> {{ error }}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,72 @@
+{% extends 'nutritionists/base.html' %}
+{% load static %}
+{% block header_area %}
+    <div class="bradcam_area">
+        <div class="single_bradcam  d-flex align-items-center bradcam_bg_1 overlay" style="height: 200px;">
+            <div class="container">
+                <div class="row align-items-center justify-content-center">
+                    <div class="col-xl-9">
+                        <div class="bradcam_text text-center">
+                            <h4>My Assignments</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    {% if assignments %}
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+            <thead class="table-primary">
+                <tr>
+                    <th>Date</th>
+                    <th>User</th>
+                    <th>Diet Plan</th>
+                    <th>User Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for assign in assignments %}
+                <tr>
+                    <td>{{ assign.assigned_date|date:"M d, Y" }}</td>
+                    <td>
+                        {{ assign.request.user.userregistration_set.first.name }}<br>
+                        <small>{{ assign.request.user.email }}</small>
+                    </td>
+                    <td>{{ assign.diet_plan.dietplan }}</td>
+                    <td>
+                        {% if assign.status == 'selected' %}
+                            <span class="badge badge-success">Accepted</span>
+                        {% elif assign.status == 'revision_requested' %}
+                            <span class="badge badge-warning">Revision Requested</span>
+                            <br>
+                            <small class="text-danger">Reason: {{ assign.rejection_reason }}</small>
+                            <div class="mt-2">
+                                <a href="/suggest_plan/?request_id={{ assign.request.id }}" class="btn btn-primary btn-sm">Suggest New Plan</a>
+                            </div>
+                        {% else %}
+                            <span class="badge badge-secondary">Suggested</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="/chat/{{ assign.id }}/" class="btn btn-info btn-sm">
+                            Chat <i class="fa fa-comments"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+        <div class="alert alert-info text-center">You haven't assigned any diet plans yet. Check "User Requests" to assign plans.</div>
+    {% endif %}
+</div>
+
+{% endblock %}

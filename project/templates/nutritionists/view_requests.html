@@ -1,0 +1,67 @@
+{% extends 'nutritionists/base.html' %}
+{% load static %}
+{% block header_area %}
+    <div class="bradcam_area">
+        <div class="single_bradcam  d-flex align-items-center bradcam_bg_1 overlay" style="height: 200px;">
+            <div class="container">
+                <div class="row align-items-center justify-content-center">
+                    <div class="col-xl-9">
+                        <div class="bradcam_text text-center">
+                            <h4>User Diet Requests</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    {% if requests %}
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+            <thead class="table-primary">
+                <tr>
+                    <th>Date</th>
+                    <th>User</th>
+                    <th>Details</th>
+                    <th>Goal</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for req in requests %}
+                <tr>
+                    <td>{{ req.request_date|date:"M d, Y" }}</td>
+                    <td>{{ req.user.email }}<br><small>{{ req.user.userregistration_set.first.name }}</small></td>
+                    <td>
+                        <strong>Age:</strong> {{ req.age }}<br>
+                        <strong>BMI:</strong> {{ req.bmi|floatformat:1 }}<br>
+                        <strong>System Rec:</strong> <span class="text-info">{{ req.calculated_needs }}</span><br>
+                        <strong>Note:</strong> {{ req.description|truncatechars:50 }}
+                    </td>
+                    <td>{{ req.health_goal }}</td>
+                    <td>
+                        {% if req.status == 'pending' %}
+                            <span class="badge badge-warning text-dark">Pending</span>
+                        {% else %}
+                            <span class="badge badge-success text-dark">Replied</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="/suggest_plan?request_id={{ req.id }}" class="btn btn-info btn-sm">View & Suggest</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+        <div class="alert alert-info text-center">No diet requests found.</div>
+    {% endif %}
+</div>
+
+{% endblock %}

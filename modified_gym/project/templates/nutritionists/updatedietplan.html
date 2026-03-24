@@ -1,0 +1,131 @@
+{% extends 'nutritionists/base.html' %}
+
+{% block header_area %}
+    <div class="bradcam_area">
+        <div class="single_bradcam  d-flex align-items-center bradcam_bg_1 overlay" style="height: 200px;">
+            <div class="container">
+                <div class="row align-items-center justify-content-center">
+                    <div class="col-xl-9">
+                        <div class="bradcam_text text-center">
+                            <h4>Update Diet Plan</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+
+<div class="container pb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="login-box bg-white p-5 rounded shadow-sm">
+                {% for i in userData %}
+                <form method="POST">
+                    {% csrf_token %}
+                    
+                    <!-- Section 1: Basic Information -->
+                    <div class="mb-4">
+                        <h5 class="text-primary border-bottom pb-2 mb-3"><i class="fa fa-info-circle mr-2"></i>Basic Information</h5>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="text-dark font-weight-bold">Plan Name</label>
+                                <input type="text" name="dietplan" class="form-control" value="{{ i.dietplan }}" placeholder="e.g., Summer Shred 2026" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="text-dark font-weight-bold">Category</label>
+                                <select name="category" class="form-control" required>
+                                    <option value="">Select Category</option>
+                                    <option value="Weight Loss" {% if i.category == 'Weight Loss' %}selected{% endif %}>Weight Loss</option>
+                                    <option value="Muscle Gain" {% if i.category == 'Muscle Gain' %}selected{% endif %}>Muscle Gain</option>
+                                    <option value="Maintenance" {% if i.category == 'Maintenance' %}selected{% endif %}>Maintenance</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="text-dark font-weight-bold">Description</label>
+                            <textarea name="description" class="form-control" rows="2" placeholder="Brief overview of the plan's focus...">{{ i.description }}</textarea>
+                        </div>
+                    </div>
+
+                    <!-- Section 2: Nutritional Goals -->
+                    <div class="mb-4">
+                        <h5 class="text-primary border-bottom pb-2 mb-3"><i class="fa fa-calculator mr-2"></i>Daily Nutritional Goals</h5>
+                        <div class="row">
+                            <div class="col-md-3 mb-3">
+                                <label class="text-dark font-weight-bold">Calories (kcal)</label>
+                                <input type="number" name="calories" class="form-control" value="{{ i.calories }}" placeholder="0" min="0">
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="text-dark font-weight-bold">Protein (g)</label>
+                                <input type="number" name="protein" class="form-control" value="{{ i.protein }}" placeholder="0" min="0">
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="text-dark font-weight-bold">Carbs (g)</label>
+                                <input type="number" name="carbs" class="form-control" value="{{ i.carbs }}" placeholder="0" min="0">
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="text-dark font-weight-bold">Fats (g)</label>
+                                <input type="number" name="fats" class="form-control" value="{{ i.fats }}" placeholder="0" min="0">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 3: Meal Schedule -->
+                    <div class="mb-4">
+                        <h5 class="text-primary border-bottom pb-2 mb-3"><i class="fa fa-cutlery mr-2"></i>Meal Schedule</h5>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="text-dark font-weight-bold">Breakfast</label>
+                                <textarea name="breakfast" class="form-control" rows="3" placeholder="Morning meals...">{{ i.breakfast }}</textarea>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="text-dark font-weight-bold">Lunch</label>
+                                <textarea name="lunch" class="form-control" rows="3" placeholder="Midday meals...">{{ i.lunch }}</textarea>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="text-dark font-weight-bold">Dinner</label>
+                                <textarea name="dinner" class="form-control" rows="3" placeholder="Evening meals...">{{ i.dinner }}</textarea>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="text-dark font-weight-bold">Intermediate Foods</label>
+                                <textarea name="intermediate_foods" class="form-control" rows="3" placeholder="Snacks/Shakes...">{{ i.intermediate_foods }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 4: Lifestyle & Notes -->
+                    <div class="mb-4">
+                        <h5 class="text-primary border-bottom pb-2 mb-3"><i class="fa fa-heartbeat mr-2"></i>Lifestyle & Notes</h5>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="text-dark font-weight-bold">Water Intake</label>
+                                <input type="text" name="drinking_water" class="form-control" value="{{ i.drinking_water }}" placeholder="e.g., 3-4 Liters">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="text-dark font-weight-bold">Sleep Target</label>
+                                <input type="text" name="sleeping_hours" class="form-control" value="{{ i.sleeping_hours }}" placeholder="e.g., 7-8 Hours">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="text-dark font-weight-bold">Daily Activity</label>
+                                <input type="text" name="activity" class="form-control" value="{{ i.activity }}" placeholder="e.g., 30 min Cardio">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="text-dark font-weight-bold">Nutritionist's Notes</label>
+                            <textarea name="notes" class="form-control" rows="2" placeholder="Special instructions or tips...">{{ i.notes }}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-4 border-top pt-4">
+                        <button type="submit" class="btn btn-primary px-5 py-2">Update Professional Diet Plan</button>
+                    </div>
+                </form>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,103 @@
+{% extends 'nutritionists/base.html' %}
+
+{% load static %}
+{% block header_area %}
+    <div class="bradcam_area">
+        <div class="single_bradcam  d-flex align-items-center bradcam_bg_1 overlay" style="height: 200px;">
+            <div class="container">
+                <div class="row align-items-center justify-content-center">
+                    <div class="col-xl-9">
+                        <div class="bradcam_text text-center">
+                            <h4>View Diet Plans</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    {% if userData %}
+        <div class="row justify-content-center">
+            {% for d in userData %}
+            <div class="col-md-4 mb-5">
+
+                 <div class="card shadow-lg border-primary h-100">
+                    <div class="card-header bg-primary text-white text-center">
+                
+                        <strong>{{ d.dietplan }}</strong>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <span class="badge badge-info">{{ d.category }}</span>
+                            {% if d.is_custom %}
+                                <span class="badge badge-warning">Custom Plan</span>
+                            {% endif %}
+                        </div>
+                        
+                        {% if d.description %}
+                            <p class="small text-muted mb-3 italic">"{{ d.description }}"</p>
+                        {% endif %}
+
+                        <div class="row no-gutters mb-3 text-center border rounded py-2 bg-light">
+                            <div class="col-3">
+                                <div class="small font-weight-bold text-primary">Kcal</div>
+                                <div class="font-weight-bold">{{ d.calories|default:0 }}</div>
+                            </div>
+                            <div class="col-3 border-left">
+                                <div class="small font-weight-bold text-success">P</div>
+                                <div class="font-weight-bold">{{ d.protein|default:0 }}g</div>
+                            </div>
+                            <div class="col-3 border-left">
+                                <div class="small font-weight-bold text-info">C</div>
+                                <div class="font-weight-bold">{{ d.carbs|default:0 }}g</div>
+                            </div>
+                            <div class="col-3 border-left">
+                                <div class="small font-weight-bold text-warning">F</div>
+                                <div class="font-weight-bold">{{ d.fats|default:0 }}g</div>
+                            </div>
+                        </div>
+
+                        <div class="meal-details small">
+                            <p class="mb-1"><strong>Breakfast:</strong> {{ d.breakfast|truncatechars:100 }}</p>
+                            <p class="mb-1"><strong>Lunch:</strong> {{ d.lunch|truncatechars:100 }}</p>
+                            <p class="mb-1"><strong>Dinner:</strong> {{ d.dinner|truncatechars:100 }}</p>
+                            <p class="mb-3"><strong>Snacks:</strong> {{ d.intermediate_foods|truncatechars:50 }}</p>
+                            
+                            <div class="border-top pt-2">
+                                <p class="mb-0 text-muted"><i class="fa fa-tint mr-1"></i> {{ d.drinking_water }}</p>
+                                <p class="mb-0 text-muted"><i class="fa fa-bed mr-1"></i> {{ d.sleeping_hours }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                   
+                    <div class="card-footer text-center">
+                        <a href="/update_diet?id={{ d.id }}"
+                           class="btn btn-warning btn-sm me-2">
+                            Update
+                        </a>
+
+                        <a href="/deletediet?id={{ d.id }}"
+                           class="btn btn-danger btn-sm"
+                           onclick="return confirm('Are you sure?')">
+                            Delete
+                        </a>
+                    </div>
+                 
+
+                </div>
+
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <h5 class="text-center mt-4">No Diet Plan</h5>
+    {% endif %}
+</div>
+
+{% endblock %}

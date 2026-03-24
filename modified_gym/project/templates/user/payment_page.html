@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <div class="bradcam_area">
+        <div class="single_bradcam d-flex align-items-center bradcam_bg_1 overlay" style="height: 200px;">
+            <div class="container">
+                <div class="row align-items-center justify-content-center">
+                    <div class="col-xl-9">
+                        <div class="bradcam_text text-center">
+                            <h4 class="text-white">Secure Checkout</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<style>
+    .payment-container { max-width: 600px; margin: 50px auto; }
+    .nav-tabs .nav-link { color: #495057; font-weight: 600; border: none; padding: 15px 25px; }
+    .nav-tabs .nav-link.active { color: #f7444e; border-bottom: 3px solid #f7444e; background: transparent; }
+    .payment-card { border-radius: 15px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+    .method-icon { width: 40px; margin-right: 15px; }
+    .form-control { height: 50px; border-radius: 10px; }
+    .pay-btn { background: #f7444e; border: none; height: 55px; font-weight: 700; font-size: 18px; border-radius: 10px; transition: 0.3s; }
+    .pay-btn:hover { background: #d63031; transform: translateY(-2px); }
+</style>
+
+<div class="container payment-container">
+    <div class="card payment-card">
+        <div class="card-body p-5">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="mb-0">Payment Method</h4>
+                <div class="text-right">
+                    <p class="mb-0 text-muted small">Total Amount</p>
+                    <h3 class="font-weight-bold text-dark">₹{{ amount }}</h3>
+                </div>
+            </div>
+
+            <ul class="nav nav-tabs mb-4" id="paymentTabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="upi-tab" data-toggle="tab" href="#upi" role="tab">UPI</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="card-tab" data-toggle="tab" href="#card" role="tab">Card</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="nb-tab" data-toggle="tab" href="#nb" role="tab">Net Banking</a>
+                </li>
+            </ul>
+
+            <form action="/process_payment/{{ assignment.id }}/" method="POST" id="paymentForm">
+                {% csrf_token %}
+                <div class="tab-content" id="paymentTabsContent">
+                    <!-- UPI Tab -->
+                    <div class="tab-pane fade show active" id="upi" role="tabpanel">
+                        <div class="form-group mb-4">
+                            <label class="font-weight-bold small">Enter VPA / UPI ID</label>
+                            <input type="text" name="upi_id" id="upi_id" class="form-control" placeholder="user@okaxis">
+                            <small class="text-muted">Example: user@upi, name@bank</small>
+                        </div>
+                        <div class="row mb-4">
+                            <div class="col-4">
+                                <div class="border rounded p-2 text-center clickable" style="cursor: pointer;" onclick="document.getElementById('upi_id').value='user@gpay'">
+                                    <img src="https://img.icons8.com/color/48/000000/google-pay.png" class="method-icon m-0">
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="border rounded p-2 text-center clickable" style="cursor: pointer;" onclick="document.getElementById('upi_id').value='user@phonepe'">
+                                    <img src="https://img.icons8.com/color/48/000000/phone-pe.png" class="method-icon m-0">
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="border rounded p-2 text-center clickable" style="cursor: pointer;" onclick="document.getElementById('upi_id').value='user@paytm'">
+                                    <img src="https://img.icons8.com/color/48/000000/paytm--v1.png" class="method-icon m-0">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card Tab -->
+                    <div class="tab-pane fade" id="card" role="tabpanel">
+                        <div class="form-group mb-3">
+                            <label class="font-weight-bold small">Card Number</label>
+                            <input type="text" class="form-control" placeholder="xxxx xxxx xxxx xxxx" maxlength="16">
+                        </div>
+                        <div class="row">
+                            <div class="col-8">
+                                <div class="form-group mb-3">
+                                    <label class="font-weight-bold small">Expiry Date</label>
+                                    <input type="text" class="form-control" placeholder="MM/YY" maxlength="5">
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-group mb-3">
+                                    <label class="font-weight-bold small">CVV</label>
+                                    <input type="password" class="form-control" placeholder="***" maxlength="3">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group mb-4">
+                            <label class="font-weight-bold small">Cardholder Name</label>
+                            <input type="text" class="form-control" placeholder="Full Name">
+                        </div>
+                    </div>
+
+                    <!-- Net Banking Tab -->
+                    <div class="tab-pane fade" id="nb" role="tabpanel">
+                        <div class="form-group mb-4">
+                            <label class="font-weight-bold small">Select Bank</label>
+                            <select class="form-control">
+                                <option>SBI</option>
+                                <option>HDFC Bank</option>
+                                <option>ICICI Bank</option>
+                                <option>Axis Bank</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-secondary small d-flex align-items-center mb-4">
+                    <i class="fa fa-lock mr-2"></i> Your payment details are encrypted and secure.
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block pay-btn">Pay ₹{{ amount }} Now</button>
+            </form>
+            
+            <script>
+                // Ensure form submits correctly
+                document.getElementById('paymentForm').onsubmit = function() {
+                    console.log("Form submitting...");
+                    return true;
+                };
+            </script>
+            
+            <div class="text-center mt-4">
+                <a href="/my_requests" class="text-muted small">Cancel Transaction</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

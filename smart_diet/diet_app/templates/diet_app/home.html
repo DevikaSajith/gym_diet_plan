@@ -1,0 +1,32 @@
+{% extends 'diet_app/base.html' %}
+
+{% block content %}
+<div style="text-align: center; padding: 4rem 0;">
+    <h1 style="font-size: 3.5rem; background: linear-gradient(to right, #818cf8, #fb7185); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1.5rem;">
+        Your Personal AI Nutritionist
+    </h1>
+    <p style="font-size: 1.25rem; color: var(--text-secondary); max-width: 600px; margin: 0 auto 3rem;">
+        Get personalized diet plans tailored to your health profile and instantly check calories for any food item.
+    </p>
+    
+    <div class="grid">
+        <div class="card" style="text-align: left;">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">🥗</div>
+            <h3>Diet Recommender</h3>
+            <p style="margin-bottom: 2rem; color: var(--text-secondary);">
+                Input your biometrics, activity level, and preferences to receive a customized diet plan backed by data.
+            </p>
+            <a href="{% url 'recommend_diet' %}" class="btn">Get Plan &rarr;</a>
+        </div>
+
+        <div class="card" style="text-align: left;">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">🔥</div>
+            <h3>Calorie Finder</h3>
+            <p style="margin-bottom: 2rem; color: var(--text-secondary);">
+                Wondering how many calories are in your meal? Search our extensive database for instant answers.
+            </p>
+            <a href="{% url 'calorie_finder' %}" class="btn">Check Calories &rarr;</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

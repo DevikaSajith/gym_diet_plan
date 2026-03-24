@@ -1,0 +1,125 @@
+{% extends 'nutritionists/base.html' %}
+{% load static %}
+
+{% block header_area %}
+    <div class="bradcam_area">
+        <div class="single_bradcam d-flex align-items-center bradcam_bg_1 overlay" style="height: 250px; padding-top: 80px;">
+            <div class="container">
+                <div class="row align-items-center justify-content-center">
+                    <div class="col-xl-9">
+                        <div class="bradcam_text text-center">
+                            <h4 style="font-family: 'Teko', sans-serif; font-size: 45px; color: #fff; text-transform: uppercase;">Manage Diet Library</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+            <h3 style="font-family: 'Teko', sans-serif; font-size: 32px; color: #1F1F1F; margin-bottom: 0;">MY PLANS & TEMPLATES</h3>
+            <p class="text-muted small">Manage your created diet plans and personalized user assignments.</p>
+        </div>
+        <a href="/adddietplan" class="genric-btn primary circle">Create New Template <i class="fa fa-plus ml-2"></i></a>
+    </div>
+
+    {% if userData %}
+        <div class="row">
+            {% for d in userData %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card shadow-sm border-0 h-100" style="border-radius: 15px; overflow: hidden; transition: transform 0.3s ease;">
+                    <!-- Card Header with Category -->
+                    <div class="px-4 pt-4 pb-0 d-flex justify-content-between align-items-start">
+                        <div>
+                            <span class="badge badge-light border text-muted px-2 py-1 mb-2" style="font-size: 10px; letter-spacing: 0.5px;">{{ d.category|upper }}</span>
+                            <h5 style="font-family: 'Teko', sans-serif; font-size: 24px; color: #1F1F1F; line-height: 1.2;">{{ d.dietplan }}</h5>
+                        </div>
+                        {% if d.is_custom %}
+                            <div class="text-right">
+                                <span class="badge badge-danger" style="border-radius: 4px; font-size: 10px;">CUSTOM</span>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="card-body px-4">
+                        {% if d.is_custom and d.custom_for_user %}
+                            <div class="mb-3 p-2 bg-light rounded border-left" style="border-left: 3px solid #FF1414 !important;">
+                                <small class="text-muted d-block">Personalized for:</small>
+                                <span class="font-weight-bold" style="color: #1F1F1F;">{{ d.custom_for_user.userregistration_set.first.name|default:"Assigned User" }}</span>
+                            </div>
+                        {% endif %}
+
+                        {% if d.description %}
+                            <p class="small text-muted mb-3 font-italic" style="line-height: 1.4;">"{{ d.description|truncatechars:90 }}"</p>
+                        {% endif %}
+
+                        <!-- Nutritional Summary Bar -->
+                        <div class="row no-gutters mb-3 text-center py-2 bg-dark rounded text-white">
+                            <div class="col-3">
+                                <div class="small opacity-75" style="font-size: 9px;">KCAL</div>
+                                <div class="font-weight-bold">{{ d.calories|default:0 }}</div>
+                            </div>
+                            <div class="col-3 border-left border-secondary">
+                                <div class="small opacity-75" style="font-size: 9px;">P</div>
+                                <div class="font-weight-bold">{{ d.protein|default:0 }}g</div>
+                            </div>
+                            <div class="col-3 border-left border-secondary">
+                                <div class="small opacity-75" style="font-size: 9px;">C</div>
+                                <div class="font-weight-bold">{{ d.carbs|default:0 }}g</div>
+                            </div>
+                            <div class="col-3 border-left border-secondary">
+                                <div class="small opacity-75" style="font-size: 9px;">F</div>
+                                <div class="font-weight-bold">{{ d.fats|default:0 }}g</div>
+                            </div>
+                        </div>
+
+                        <div class="meal-preview small text-muted">
+                            <div class="d-flex mb-1 align-items-center">
+                                <i class="fa fa-coffee mr-2 text-warning" style="width: 15px;"></i>
+                                <span class="text-truncate">{{ d.breakfast }}</span>
+                            </div>
+                            <div class="d-flex mb-1 align-items-center">
+                                <i class="fa fa-sun-o mr-2 text-primary" style="width: 15px;"></i>
+                                <span class="text-truncate">{{ d.lunch }}</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <i class="fa fa-moon-o mr-2 text-info" style="width: 15px;"></i>
+                                <span class="text-truncate">{{ d.dinner }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-footer bg-white border-0 px-4 pb-4">
+                        <div class="row no-gutters">
+                            <div class="col-6 pr-1">
+                                <a href="/update_diet?id={{ d.id }}" class="genric-btn info-border small circle btn-block">Edit Details</a>
+                            </div>
+                            <div class="col-6 pl-1">
+                                <a href="/deletediet?id={{ d.id }}" class="genric-btn danger-border small circle btn-block" onclick="return confirm('Archive this diet plan?')">Archive</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center py-5 bg-white shadow-sm rounded" style="border-radius: 15px;">
+            <i class="fa fa-book fa-4x text-muted mb-3"></i>
+            <h4 class="text-muted">Your diet library is empty.</h4>
+            <p>Start by creating templates or personalizing plans for your clients.</p>
+            <a href="/adddietplan" class="genric-btn primary circle mt-2">Create First Plan</a>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    .card:hover { transform: translateY(-5px); }
+    .opacity-75 { opacity: 0.75; }
+    .genric-btn { padding: 0 10px !important; line-height: 35px !important; height: 35px !important; font-size: 12px !important; }
+</style>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends 'admin/adminbase.html' %}
+{% load static %}
+{% block content %}
+
+<!-- <div class="container mt-5"> -->
+    <h4 class="text-center text-black mb-4">REGISTERED USERS</h4>
+    <h4 class="text-center text-black mb-4">REGISTERED Nutritionists</h4>
+    <h4 class="text-center text-black mb-4">Diet_Plan</h4>
+
+    {% if userData %}
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover text-center">
+            <thead class="table-primary">
+                <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Age</th>
+                    <th>Gender</th>
+                    <th>Goal</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in userData %}
+                <tr>
+                    <td>{{ u.name }}</td>
+                    <td>{{ u.email }}</td>
+                    <td>{{ u.phone }}</td>
+                    <td>{{ u.age }}</td>
+                    <td>{{ u.gender }}</td>
+                    <td>{{ u.health_goal }}</td>
+                    <td>
+                        <a href="/deleteuser/{{ u.loginid.id }}/" 
+                           class="btn btn-danger btn-sm"
+                           onclick="return confirm('Are you sure?')">
+                            Delete
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+        <h5 class="text-center mt-4">No users registered</h5>
+</div>
+
+
+{% endif %}
+{% endblock %}
+</div></div>

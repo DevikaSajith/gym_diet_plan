@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <!-- bradcam_area_start -->
+    <div class="bradcam_area">
+        <div class="single_bradcam d-flex align-items-center bradcam_bg_1 overlay" style="height: 250px; padding-top: 80px;">
+            <div class="container">
+                <div class="row align-items-center justify-content-center">
+                    <div class="col-xl-9">
+                        <div class="bradcam_text text-center">
+                            <h4 style="font-family: 'Teko', sans-serif; font-size: 45px; color: #fff; text-transform: uppercase;">Request Diet Plan</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- bradcam_area_end -->
+
+<div class="container pb-5 mt-5">
+    <form action="#" method="POST">
+        {% csrf_token %}
+        <div class="row justify-content-center">
+            <div class="col-xl-8 col-lg-10 col-md-12">
+                <div class="login-screen shadow-lg" style="background: #fff; padding: 40px; border-radius: 15px; border: 1px solid #eee;">
+                    <div class="login-box">
+                        <h4 class="text-center text-black mb-5" style="font-family: 'Teko', sans-serif; font-size: 36px; letter-spacing: 2px;">TELL US ABOUT YOURSELF</h4>
+                        
+                        <!-- 1. Physical Statistics -->
+                        <div class="section-title mb-4" style="border-left: 5px solid #FF1414; padding-left: 15px;">
+                            <h5 style="font-family: 'Teko', sans-serif; font-size: 24px; color: #1F1F1F;">1. PHYSICAL STATISTICS</h5>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label class="text-dark font-weight-bold mb-2">Age</label>
+                                <input type="number" class="form-control custom-input" name="age" value="{{ user_details.age }}" required>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <label class="text-dark font-weight-bold mb-2">Gender</label>
+                                <select class="form-control custom-select-box wide" name="gender" required>
+                                    <option value="Male" {% if user_details.gender == 'Male' %}selected{% endif %}>Male</option>
+                                    <option value="Female" {% if user_details.gender == 'Female' %}selected{% endif %}>Female</option>
+                                    <option value="Other" {% if user_details.gender == 'Other' %}selected{% endif %}>Other</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label class="text-dark font-weight-bold mb-2">Height (cm)</label>
+                                <input type="number" step="0.1" class="form-control custom-input" name="height" value="{{ user_details.height }}" required>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <label class="text-dark font-weight-bold mb-2">Weight (kg)</label>
+                                <input type="number" step="0.1" class="form-control custom-input" name="weight" value="{{ user_details.weight }}" required>
+                            </div>
+                        </div>
+
+                        <!-- 2. Health & Lifestyle -->
+                        <div class="section-title mb-4 mt-4" style="border-left: 5px solid #FF1414; padding-left: 15px;">
+                            <h5 style="font-family: 'Teko', sans-serif; font-size: 24px; color: #1F1F1F;">2. HEALTH & LIFESTYLE</h5>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label class="text-dark font-weight-bold mb-2">Primary Health Goal</label>
+                                <select class="form-control custom-select-box wide" name="health_goal" required>
+                                    <option value="Weight Loss" {% if user_details.health_goal == 'Weight Loss' %}selected{% endif %}>Weight Loss</option>
+                                    <option value="Muscle Gain" {% if user_details.health_goal == 'Muscle Gain' %}selected{% endif %}>Muscle Gain</option>
+                                    <option value="Maintenance" {% if user_details.health_goal == 'Maintenance' %}selected{% endif %}>Maintenance</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <label class="text-dark font-weight-bold mb-2">Activity Level</label>
+                                <select class="form-control custom-select-box wide" name="activity_level" required>
+                                    <option value="">Select Activity Level</option>
+                                    <option value="Sedentary">Sedentary (Little to no exercise)</option>
+                                    <option value="Lightly Active">Lightly Active (1-3 days/week)</option>
+                                    <option value="Moderately Active">Moderately Active (3-5 days/week)</option>
+                                    <option value="Very Active">Very Active (6-7 days/week)</option>
+                                    <option value="Extra Active">Extra Active (Hard physical job)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <label class="text-dark font-weight-bold mb-3">Food Preference</label>
+                            <div class="d-flex flex-wrap mt-2">
+                                <div class="form-check mr-4 mb-2">
+                                    <input class="form-check-input" type="radio" name="food_preference" id="pref1" value="Vegetarian" required>
+                                    <label class="form-check-label ml-1" for="pref1" style="cursor: pointer;">Vegetarian</label>
+                                </div>
+                                <div class="form-check mr-4 mb-2">
+                                    <input class="form-check-input" type="radio" name="food_preference" id="pref2" value="Non-Vegetarian">
+                                    <label class="form-check-label ml-1" for="pref2" style="cursor: pointer;">Non-Vegetarian</label>
+                                </div>
+                                <div class="form-check mr-4 mb-2">
+                                    <input class="form-check-input" type="radio" name="food_preference" id="pref3" value="Vegan">
+                                    <label class="form-check-label ml-1" for="pref3" style="cursor: pointer;">Vegan</label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="food_preference" id="pref4" value="Eggetarian">
+                                    <label class="form-check-label ml-1" for="pref4" style="cursor: pointer;">Eggetarian</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <label class="text-dark font-weight-bold mb-2">Allergies (if any)</label>
+                            <textarea class="form-control custom-textarea" name="allergies" rows="2" placeholder="e.g., Peanuts, Lactose, Gluten..."></textarea>
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <label class="text-dark font-weight-bold mb-2">Medical Conditions</label>
+                            <textarea class="form-control custom-textarea" name="medical_conditions" rows="2" placeholder="e.g., Diabetes, PCOD, Thyroid..."></textarea>
+                        </div>
+
+                        <!-- 3. Routine & Requests -->
+                        <div class="section-title mb-4 mt-5" style="border-left: 5px solid #FF1414; padding-left: 15px;">
+                            <h5 style="font-family: 'Teko', sans-serif; font-size: 24px; color: #1F1F1F;">3. ROUTINE & REQUESTS</h5>
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <label class="text-dark font-weight-bold mb-2">Current Daily Routine</label>
+                            <textarea class="form-control custom-textarea" name="daily_routine" rows="3" placeholder="Describe your wake-up time, working hours, and physical activity..."></textarea>
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <label class="text-dark font-weight-bold mb-2">Current Dietary History</label>
+                            <textarea class="form-control custom-textarea" name="dietary_history" rows="3" placeholder="What do you usually eat for Breakfast, Lunch and Dinner?"></textarea>
+                        </div>
+                        
+                        <div class="form-group mb-5">
+                            <label class="text-dark font-weight-bold mb-2">Any Specific Message for the Nutritionist?</label>
+                            <textarea class="form-control custom-textarea" name="description" rows="3" placeholder="Is there anything specific you would like to have in your diet?" required style="border: 1px solid #FF1414;"></textarea>
+                        </div>
+                        
+                        <div class="actions text-center">
+                            <button type="submit" class="boxed-btn3" style="width: 100%; font-size: 20px; text-transform: uppercase;">Submit My Request</button>
+                            <p class="mt-3 small text-muted">A nutritionist will review your profile and respond within 24 hours.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<style>
+    .custom-input, .custom-textarea {
+        border-radius: 10px !important;
+        padding: 12px 15px !important;
+        border: 1px solid #ddd !important;
+        height: auto !important;
+    }
+    .custom-input:focus, .custom-textarea:focus {
+        border-color: #FF1414 !important;
+        box-shadow: 0 0 0 0.2rem rgba(255, 20, 20, 0.1) !important;
+    }
+    /* Fix for Nice Select breaking the layout */
+    .nice-select.custom-select-box {
+        height: 50px !important;
+        line-height: 48px !important;
+        border-radius: 10px !important;
+        border: 1px solid #ddd !important;
+        width: 100% !important;
+        float: none !important;
+        margin-bottom: 0 !important;
+    }
+    .nice-select.custom-select-box .list {
+        width: 100% !important;
+        border-radius: 10px !important;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
+    }
+    .nice-select.custom-select-box .option {
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+    }
+    .nice-select.custom-select-box:after {
+        right: 15px !important;
+    }
+    .boxed-btn3:hover {
+        transform: scale(1.01);
+        transition: transform 0.2s ease;
+    }
+    label {
+        display: block !important;
+        margin-bottom: 8px !important;
+    }
+    .form-check {
+        display: flex !important;
+        align-items: center !important;
+    }
+    .form-check-input {
+        margin-top: 0 !important;
+        position: static !important;
+        width: 18px !important;
+        height: 18px !important;
+    }
+    .form-check-label {
+        margin-bottom: 0 !important;
+        padding-left: 5px !important;
+        color: #555 !important;
+        font-size: 15px !important;
+    }
+</style>
+{% endblock %}

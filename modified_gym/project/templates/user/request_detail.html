@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+{% block content %}
+    <!-- bradcam_area_start -->
+    <div class="bradcam_area">
+        <div class="single_bradcam d-flex align-items-center bradcam_bg_1 overlay" style="height: 200px;">
+            <div class="container">
+                <div class="row align-items-center justify-content-center">
+                    <div class="col-xl-9">
+                        <div class="bradcam_text text-center">
+                            <h4 style="font-family: 'Teko', sans-serif; font-size: 45px; text-transform: uppercase;">Request Details</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- bradcam_area_end -->
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-sm border-0" style="border-radius: 15px;">
+                <div class="card-body p-5">
+                    <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+                        <h3 style="font-family: 'Teko', sans-serif; font-size: 32px;">REQUEST #{{ req.id }}</h3>
+                        <span class="badge {% if req.status == 'pending' %}badge-warning{% else %}badge-success{% endif %} px-4 py-2 text-dark" style="border-radius: 50px; font-weight: 600;">{{ req.status|upper }}</span>
+                    </div>
+
+                    <div class="row mb-5">
+                        <div class="col-md-6">
+                            <h5 class="text-primary mb-3">Health Profile</h5>
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><strong>Goal:</strong> {{ req.health_goal }}</li>
+                                <li class="mb-2"><strong>Activity:</strong> {{ req.activity_level }}</li>
+                                <li class="mb-2"><strong>Food Preference:</strong> {{ req.food_preference }}</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="text-primary mb-3">Physical Stats</h5>
+                            <div class="row text-center bg-light p-3 rounded mx-0">
+                                <div class="col-4 border-right">
+                                    <small class="d-block text-muted">Height</small>
+                                    <strong>{{ req.height }} cm</strong>
+                                </div>
+                                <div class="col-4 border-right">
+                                    <small class="d-block text-muted">Weight</small>
+                                    <strong>{{ req.weight }} kg</strong>
+                                </div>
+                                <div class="col-4">
+                                    <small class="d-block text-muted">Age</small>
+                                    <strong>{{ req.age }}</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-5">
+                        <h5 class="text-primary mb-3">Your Notes</h5>
+                        <div class="p-3 bg-light rounded italic" style="border-left: 4px solid #FF1414;">
+                            "{{ req.description }}"
+                        </div>
+                    </div>
+
+                    {% if assign %}
+                        <div class="section-top-border mt-5 pt-5 border-top">
+                            <h3 class="mb-30" style="font-family: 'Teko', sans-serif; font-size: 32px; color: #1F1F1F;">NUTRITIONIST'S SUGGESTED PLAN</h3>
+                            
+                            <div class="card border-0 shadow-sm mb-4">
+                                <div class="card-header bg-dark text-white py-3">
+                                    <h5 class="mb-0 text-white">{{ assign.diet_plan.dietplan }}</h5>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered mb-0">
+                                        <tr>
+                                            <td class="p-4 bg-light" style="width: 25%;"><strong>Breakfast Plan</strong></td>
+                                            <td class="p-4">{{ assign.diet_plan.breakfast|linebreaksbr }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="p-4 bg-light"><strong>Lunch Plan</strong></td>
+                                            <td class="p-4">{{ assign.diet_plan.lunch|linebreaksbr }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="p-4 bg-light"><strong>Dinner Plan</strong></td>
+                                            <td class="p-4">{{ assign.diet_plan.dinner|linebreaksbr }}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            {% if assign.comments %}
+                                <div class="alert alert-info p-4 mb-4 rounded shadow-sm">
+                                    <h6 class="font-weight-bold mb-2">Message from Nutritionist:</h6>
+                                    <p class="mb-0">{{ assign.comments }}</p>
+                                </div>
+                            {% endif %}
+
+                            <div class="d-flex btn-group-justified">
+                                {% if assign.status == 'selected' %}
+                                    <div class="alert alert-success w-100 text-center rounded-pill px-5 py-3 shadow-sm">
+                                        <h5 class="text-success mb-0"><i class="fa fa-check-circle mr-2"></i> This plan is currently your active lifestyle plan.</h5>
+                                    </div>
+                                {% elif assign.status == 'revision_requested' %}
+                                    <div class="alert alert-warning w-100 p-4 rounded shadow-sm">
+                                        <h6 class="font-weight-bold mb-1"><i class="fa fa-clock-o mr-2"></i> Revision Ongoing</h6>
+                                        <p class="mb-0 small text-muted">Comment: {{ assign.rejection_reason }}</p>
+                                    </div>
+                                {% else %}
+                                    <div class="row w-100 no-gutters">
+                                        <div class="col-md-6 px-1">
+                                            <a href="/accept_plan?assignment_id={{ assign.id }}" class="genric-btn success circle w-100 py-3" style="font-size: 18px; line-height: 25px;">ACCEPT PLAN</a>
+                                        </div>
+                                        <div class="col-md-6 px-1">
+                                            <button class="genric-btn warning-border circle w-100 py-3" onclick="toggleRevisionForm()" style="font-size: 18px; line-height: 25px;">REQUEST CHANGES</button>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div id="revisionForm" class="mt-4 p-4 bg-light rounded shadow-sm" style="display: none; border-top: 3px solid #ffc107;">
+                                <form action="/request_revision/" method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="assignment_id" value="{{ assign.id }}">
+                                    <h6 class="mb-3">What would you like to change?</h6>
+                                    <textarea name="reason" class="form-control mb-3" rows="4" placeholder="Be specific about which meal or ingredient you'd like to swap..." required></textarea>
+                                    <button type="submit" class="genric-btn warning circle px-5">Submit Revision Request</button>
+                                </form>
+                            </div>
+
+                            <div class="text-center mt-5">
+                                {% if assign.is_paid %}
+                                    <a href="/chat/{{ assign.id }}/" class="genric-btn info circle px-5 py-3" style="font-size: 18px; line-height: 25px;">
+                                        <i class="fa fa-comments mr-2"></i> OPEN PRIVATE CHAT
+                                    </a>
+                                {% else %}
+                                    <a href="/pay_subscription/{{ assign.id }}/" class="genric-btn warning circle px-5 py-3" style="font-size: 18px; line-height: 25px;">
+                                        <i class="fa fa-lock mr-2"></i> UNLOCK CHAT WITH NUTRITIONIST
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="mt-5 text-center py-5 border rounded" style="border-style: dashed !important; border-width: 2px !important;">
+                            <i class="fa fa-hourglass-half fa-3x text-muted mb-3"></i>
+                            <h4>Plan assignment in progress</h4>
+                            <p class="text-muted">A nutritionist will review your details soon. We'll notify you when your plan is ready.</p>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="text-center mt-5 pt-4 border-top">
+                        <a href="/my_requests/" class="text-muted"><i class="fa fa-arrow-left mr-2"></i> Back to all requests</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .italic { font-style: italic; }
+    .genric-btn { text-transform: uppercase; font-weight: 600; }
+</style>
+
+<script>
+function toggleRevisionForm() {
+    var form = document.getElementById('revisionForm');
+    form.style.display = (form.style.display === 'none') ? 'block' : 'none';
+}
+</script>
+{% endblock %}

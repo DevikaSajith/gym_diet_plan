@@ -1,0 +1,354 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <!-- bradcam_area_start -->
+    <div class="bradcam_area">
+        <div class="single_bradcam d-flex align-items-center bradcam_bg_1 overlay" style="height: 250px; padding-top: 80px;">
+            <div class="container">
+                <div class="row align-items-center justify-content-center">
+                    <div class="col-xl-9">
+                        <div class="bradcam_text text-center">
+                            <h4 style="font-family: 'Teko', sans-serif; font-size: 45px; color: #fff; text-transform: uppercase;">My Diet Plans</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- bradcam_area_end -->
+
+<div class="container mt-5 mb-5">
+    
+    {% if personalized_plans %}
+    <div class="section-top-border">
+        <h3 class="mb-30" style="font-family: 'Teko', sans-serif; font-size: 36px; color: #FF1414; border-bottom: 2px solid #FF1414; display: inline-block;">PERSONALIZED FOR YOU</h3>
+        <p class="text-muted mb-4">These plans were created specifically for your health profile by our nutritionists.</p>
+        <div class="row">
+            {% for d in personalized_plans %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card shadow-lg border-0 h-100" style="border-radius: 15px; overflow: hidden; border-left: 5px solid #FF1414 !important;">
+                    <div class="card-header bg-white pt-4 pb-0 border-0">
+                        <h4 style="font-family: 'Teko', sans-serif; font-size: 24px; color: #1F1F1F;">{{ d.dietplan }}</h4>
+                        <span class="badge badge-danger px-3 py-2" style="border-radius: 20px; font-weight: 500;">PREMIUM CUSTOM PLAN</span>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="row no-gutters mb-4 text-center py-2" style="background: #fdf2f2; border-radius: 10px;">
+                            <div class="col-3">
+                                <div class="small fw-bold text-muted">Kcal</div>
+                                <div class="h6 mb-0 font-weight-bold">{{ d.calories|default:0 }}</div>
+                            </div>
+                            <div class="col-3">
+                                <div class="small fw-bold text-muted">P(g)</div>
+                                <div class="h6 mb-0 font-weight-bold">{{ d.protein|default:0 }}</div>
+                            </div>
+                            <div class="col-3">
+                                <div class="small fw-bold text-muted">C(g)</div>
+                                <div class="h6 mb-0 font-weight-bold">{{ d.carbs|default:0 }}</div>
+                            </div>
+                            <div class="col-3">
+                                <div class="small fw-bold text-muted">F(g)</div>
+                                <div class="h6 mb-0 font-weight-bold">{{ d.fats|default:0 }}</div>
+                            </div>
+                        </div>
+
+                        <div class="meal-list small">
+                            <div class="d-flex mb-2">
+                                <div class="bg-light p-2 rounded mr-2" style="width: 40px; text-align: center;"><i class="fa fa-coffee text-warning"></i></div>
+                                <div><strong class="d-block">Breakfast</strong> {{ d.breakfast }}</div>
+                            </div>
+                            <div class="d-flex mb-2">
+                                <div class="bg-light p-2 rounded mr-2" style="width: 40px; text-align: center;"><i class="fa fa-sun-o text-danger"></i></div>
+                                <div><strong class="d-block">Lunch</strong> {{ d.lunch }}</div>
+                            </div>
+                            <div class="d-flex mb-2">
+                                <div class="bg-light p-2 rounded mr-2" style="width: 40px; text-align: center;"><i class="fa fa-moon-o text-primary"></i></div>
+                                <div><strong class="d-block">Dinner</strong> {{ d.dinner }}</div>
+                            </div>
+                        </div>
+
+                        <div class="mt-3 pt-2 border-top">
+                            <div class="row no-gutters">
+                                <div class="col-4 small text-center"><i class="fa fa-tint text-primary"></i> <div class="font-weight-bold">{{ d.drinking_water }}</div></div>
+                                <div class="col-4 small text-center border-left border-right"><i class="fa fa-bed text-info"></i> <div class="font-weight-bold">{{ d.sleeping_hours }}</div></div>
+                                <div class="col-4 small text-center"><i class="fa fa-running text-success"></i> <div class="font-weight-bold">{{ d.activity }}</div></div>
+                            </div>
+                        </div>
+                        
+                        {% if d.notes %}
+                        <div class="mt-3 p-3 bg-light rounded" style="border-left: 3px solid #FF1414;">
+                            <small class="text-muted d-block font-italic">Nutritionist's Note:</small>
+                            <p class="mb-0 small text-dark">{{ d.notes }}</p>
+                        </div>
+                        {% endif %}
+                    <div class="card-footer bg-white border-0 pb-4">
+                        <button class="genric-btn danger-border small circle btn-block" data-toggle="modal" data-target="#dietModal{{ d.id }}">View Details</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal for personalized diet details -->
+            <div class="modal fade" id="dietModal{{ d.id }}" tabindex="-1" role="dialog" aria-hidden="true" style="z-index: 9999;">
+                <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                    <div class="modal-content" style="border-radius: 20px; border: none; overflow: hidden;">
+                        <div class="modal-header text-white px-4 py-4" style="background: #1F1F1F; border: none;">
+                            <div>
+                                <h4 class="modal-title h3 font-weight-bold text-white mb-0" style="font-family: 'Teko', sans-serif;">{{ d.dietplan }}</h4>
+                                <span class="badge badge-danger px-3 py-1 mt-2" style="border-radius: 20px;">{{ d.category }}</span>
+                            </div>
+                            <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true" style="font-size: 30px;">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body p-0">
+                            <!-- Summary Bar -->
+                            <div class="row no-gutters text-center py-4 bg-light border-bottom">
+                                <div class="col-3">
+                                    <div class="h3 font-weight-bold mb-0" style="color: #FF1414;">{{ d.calories }}</div>
+                                    <div class="small text-muted font-weight-bold uppercase">Kcal</div>
+                                </div>
+                                <div class="col-3 border-left">
+                                    <div class="h3 font-weight-bold mb-0 text-dark">{{ d.protein }}g</div>
+                                    <div class="small text-muted font-weight-bold uppercase">Protein</div>
+                                </div>
+                                <div class="col-3 border-left">
+                                    <div class="h3 font-weight-bold mb-0 text-dark">{{ d.carbs }}g</div>
+                                    <div class="small text-muted font-weight-bold uppercase">Carbs</div>
+                                </div>
+                                <div class="col-3 border-left">
+                                    <div class="h3 font-weight-bold mb-0 text-dark">{{ d.fats }}g</div>
+                                    <div class="small text-muted font-weight-bold uppercase">Fats</div>
+                                </div>
+                            </div>
+                            
+                            <div class="p-4">
+                                {% if d.description %}
+                                <div class="mb-4">
+                                    <h5 class="font-weight-bold mb-2">Description</h5>
+                                    <p class="text-muted">{{ d.description }}</p>
+                                </div>
+                                {% endif %}
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-4">
+                                        <div class="p-3 rounded h-100" style="background: #fdf2f2;">
+                                            <h6 class="font-weight-bold mb-3" style="color: #FF1414;"><i class="fa fa-coffee mr-2"></i>BREAKFAST</h6>
+                                            <p class="mb-0 text-dark">{{ d.breakfast }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-4">
+                                        <div class="p-3 rounded h-100" style="background: #f2f6ff;">
+                                            <h6 class="font-weight-bold mb-3" style="color: #4169E1;"><i class="fa fa-sun-o mr-2"></i>LUNCH</h6>
+                                            <p class="mb-0 text-dark">{{ d.lunch }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-4">
+                                        <div class="p-3 rounded h-100" style="background: #f2fff2;">
+                                            <h6 class="font-weight-bold mb-3" style="color: #28a745;"><i class="fa fa-apple mr-2"></i>SNACKS / INTERMEDIATE</h6>
+                                            <p class="mb-0 text-dark">{{ d.intermediate_foods }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-4">
+                                        <div class="p-3 rounded h-100" style="background: #fff9f2;">
+                                            <h6 class="font-weight-bold mb-3" style="color: #fd7e14;"><i class="fa fa-moon-o mr-2"></i>DINNER</h6>
+                                            <p class="mb-0 text-dark">{{ d.dinner }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-2 py-3 border-top border-bottom">
+                                    <div class="row">
+                                        <div class="col-4 text-center">
+                                            <small class="text-muted d-block mb-1">WATER INTAKE</small>
+                                            <div class="font-weight-bold text-primary"><i class="fa fa-tint"></i> {{ d.drinking_water }}</div>
+                                        </div>
+                                        <div class="col-4 text-center border-left border-right">
+                                            <small class="text-muted d-block mb-1">SLEEP GOAL</small>
+                                            <div class="font-weight-bold text-info"><i class="fa fa-bed"></i> {{ d.sleeping_hours }}</div>
+                                        </div>
+                                        <div class="col-4 text-center">
+                                            <small class="text-muted d-block mb-1">ACTIVITY</small>
+                                            <div class="font-weight-bold text-success"><i class="fa fa-running"></i> {{ d.activity }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {% if d.notes %}
+                                <div class="mt-4 p-3 rounded" style="background: #fff8e1; border-left: 5px solid #ffc107;">
+                                    <h6 class="font-weight-bold mb-1">Special Instructions:</h6>
+                                    <p class="mb-0 small">{{ d.notes }}</p>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="modal-footer px-4 py-3 bg-light border-0">
+                            <button type="button" class="genric-btn danger circle" data-dismiss="modal">Close Plan</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="section-top-border mt-5">
+        <h3 class="mb-30" style="font-family: 'Teko', sans-serif; font-size: 36px; color: #1F1F1F; border-bottom: 2px solid #ddd; display: inline-block;">RECOMMENDED FOR {{ user_goal|upper|default:"FITNESS" }}</h3>
+        <p class="text-muted mb-4">Generalized plans based on your selected health goal.</p>
+        
+        {% if recommended_plans %}
+        <div class="row">
+            {% for d in recommended_plans %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card border-0 h-100 shadow-sm" style="border-radius: 15px; transition: transform 0.3s ease;">
+                    <div class="card-header bg-white pt-4 pb-0 border-0">
+                        <h4 style="font-family: 'Teko', sans-serif; font-size: 22px; color: #444;">{{ d.dietplan }}</h4>
+                        <span class="badge badge-light border px-2 py-1">{{ d.category }}</span>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="row no-gutters mb-3 text-center py-2" style="background: #f8f9fa; border-radius: 10px;">
+                            <div class="col-3">
+                                <div class="small text-muted">Energy</div>
+                                <div class="font-weight-bold">{{ d.calories|default:0 }}</div>
+                            </div>
+                            <div class="col-9">
+                                <div class="d-flex justify-content-around">
+                                    <div><small class="text-muted">P:</small> {{ d.protein|default:0 }}g</div>
+                                    <div><small class="text-muted">C:</small> {{ d.carbs|default:0 }}g</div>
+                                    <div><small class="text-muted">F:</small> {{ d.fats|default:0 }}g</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <ul class="list-unstyled small">
+                            <li class="mb-1"><strong>Morning:</strong> {{ d.breakfast|truncatechars:60 }}</li>
+                            <li class="mb-1"><strong>Afternoon:</strong> {{ d.lunch|truncatechars:60 }}</li>
+                            <li class="mb-1"><strong>Evening:</strong> {{ d.dinner|truncatechars:60 }}</li>
+                        </ul>
+                    </div>
+                    <div class="card-footer bg-white border-0 pb-4">
+                        <button class="genric-btn primary-border small circle btn-block" data-toggle="modal" data-target="#recModal{{ d.id }}">View Details</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal for recommended diet details -->
+            <div class="modal fade" id="recModal{{ d.id }}" tabindex="-1" role="dialog" aria-hidden="true" style="z-index: 9999;">
+                <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                    <div class="modal-content" style="border-radius: 20px; border: none; overflow: hidden;">
+                        <div class="modal-header text-white px-4 py-4" style="background: #1F1F1F; border: none;">
+                            <div>
+                                <h4 class="modal-title h3 font-weight-bold text-white mb-0" style="font-family: 'Teko', sans-serif;">{{ d.dietplan }}</h4>
+                                <span class="badge badge-info px-3 py-1 mt-2" style="border-radius: 20px;">{{ d.category }}</span>
+                            </div>
+                            <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true" style="font-size: 30px;">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body p-0">
+                            <!-- Summary Bar -->
+                            <div class="row no-gutters text-center py-4 bg-light border-bottom">
+                                <div class="col-3">
+                                    <div class="h3 font-weight-bold mb-0 text-primary">{{ d.calories }}</div>
+                                    <div class="small text-muted font-weight-bold uppercase">Kcal</div>
+                                </div>
+                                <div class="col-3 border-left">
+                                    <div class="h3 font-weight-bold mb-0 text-dark">{{ d.protein }}g</div>
+                                    <div class="small text-muted font-weight-bold uppercase">Protein</div>
+                                </div>
+                                <div class="col-3 border-left">
+                                    <div class="h3 font-weight-bold mb-0 text-dark">{{ d.carbs }}g</div>
+                                    <div class="small text-muted font-weight-bold uppercase">Carbs</div>
+                                </div>
+                                <div class="col-3 border-left">
+                                    <div class="h3 font-weight-bold mb-0 text-dark">{{ d.fats }}g</div>
+                                    <div class="small text-muted font-weight-bold uppercase">Fats</div>
+                                </div>
+                            </div>
+                            
+                            <div class="p-4">
+                                {% if d.description %}
+                                <div class="mb-4">
+                                    <h5 class="font-weight-bold mb-2">Description</h5>
+                                    <p class="text-muted">{{ d.description }}</p>
+                                </div>
+                                {% endif %}
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-4">
+                                        <div class="p-3 rounded h-100" style="background: #fdf2f2;">
+                                            <h6 class="font-weight-bold mb-3" style="color: #FF1414;"><i class="fa fa-coffee mr-2"></i>BREAKFAST</h6>
+                                            <p class="mb-0 text-dark">{{ d.breakfast }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-4">
+                                        <div class="p-3 rounded h-100" style="background: #f2f6ff;">
+                                            <h6 class="font-weight-bold mb-3" style="color: #4169E1;"><i class="fa fa-sun-o mr-2"></i>LUNCH</h6>
+                                            <p class="mb-0 text-dark">{{ d.lunch }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-4">
+                                        <div class="p-3 rounded h-100" style="background: #f2fff2;">
+                                            <h6 class="font-weight-bold mb-3" style="color: #28a745;"><i class="fa fa-apple mr-2"></i>SNACKS / INTERMEDIATE</h6>
+                                            <p class="mb-0 text-dark">{{ d.intermediate_foods }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-4">
+                                        <div class="p-3 rounded h-100" style="background: #fff9f2;">
+                                            <h6 class="font-weight-bold mb-3" style="color: #fd7e14;"><i class="fa fa-moon-o mr-2"></i>DINNER</h6>
+                                            <p class="mb-0 text-dark">{{ d.dinner }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-2 py-3 border-top border-bottom">
+                                    <div class="row">
+                                        <div class="col-4 text-center">
+                                            <small class="text-muted d-block mb-1">WATER INTAKE</small>
+                                            <div class="font-weight-bold text-primary"><i class="fa fa-tint"></i> {{ d.drinking_water }}</div>
+                                        </div>
+                                        <div class="col-4 text-center border-left border-right">
+                                            <small class="text-muted d-block mb-1">SLEEP GOAL</small>
+                                            <div class="font-weight-bold text-info"><i class="fa fa-bed"></i> {{ d.sleeping_hours }}</div>
+                                        </div>
+                                        <div class="col-4 text-center">
+                                            <small class="text-muted d-block mb-1">ACTIVITY</small>
+                                            <div class="font-weight-bold text-success"><i class="fa fa-running"></i> {{ d.activity }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {% if d.notes %}
+                                <div class="mt-4 p-3 rounded" style="background: #fff8e1; border-left: 5px solid #ffc107;">
+                                    <h6 class="font-weight-bold mb-1">Note:</h6>
+                                    <p class="mb-0 small">{{ d.notes }}</p>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="modal-footer px-4 py-3 bg-light border-0">
+                            <button type="button" class="genric-btn primary circle" data-dismiss="modal">Close Plan</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-5 bg-light rounded">
+            <i class="fa fa-calendar-times-o fa-3x text-muted mb-3"></i>
+            <p>No recommended plans found for your goal yet.</p>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+
+<style>
+    .card:hover {
+        transform: translateY(-5px);
+    }
+</style>
+
+{% endblock %}

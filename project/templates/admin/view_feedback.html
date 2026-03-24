@@ -1,0 +1,185 @@
+{% extends 'admin/adminbase.html' %}
+{% load static %}
+{% block content %}
+    <!-- Breadcrumb Area -->
+    <div class="bradcam_area">
+        <div class="single_bradcam d-flex align-items-center bradcam_bg_1 overlay" style="height: 200px;">
+            <div class="container">
+                <div class="row align-items-center justify-content-center">
+                    <div class="col-xl-9">
+                        <div class="bradcam_text text-center">
+                            <h4>User Feedback</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container pb-5 pt-5">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">All Feedback Submissions</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if feedbacks %}
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Subject</th>
+                                            <th>Rating</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for feedback in feedbacks %}
+                                        <tr>
+                                            <td>{{ feedback.submitted_date|date:"M d, Y H:i" }}</td>
+                                            <td>{{ feedback.name }}</td>
+                                            <td>{{ feedback.email }}</td>
+                                            <td>{{ feedback.subject }}</td>
+                                            <td>
+                                                {% if feedback.rating %}
+                                                    <span class="stars">
+                                                        {% for i in "12345" %}
+                                                            {% if forloop.counter <= feedback.rating %}
+                                                                <span style="color: #ffc107;">★</span>
+                                                            {% else %}
+                                                                <span style="color: #ddd;">★</span>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </span>
+                                                {% else %}
+                                                    <span class="text-muted">N/A</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-sm btn-info" data-toggle="modal" 
+                                                        data-target="#feedbackModal{{ feedback.id }}">
+                                                    <i class="fa fa-eye"></i> View Details
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        
+                                        <!-- Modal for feedback details -->
+                                        <div class="modal fade" id="feedbackModal{{ feedback.id }}" tabindex="-1" role="dialog" data-backdrop="static">
+                                            <div class="modal-dialog modal-lg" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header bg-primary text-white">
+                                                        <h5 class="modal-title">Feedback Details</h5>
+                                                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="row mb-3">
+                                                            <div class="col-md-6">
+                                                                <strong>Name:</strong> {{ feedback.name }}
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <strong>Email:</strong> {{ feedback.email }}
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-3">
+                                                            <div class="col-md-6">
+                                                                <strong>Date:</strong> {{ feedback.submitted_date|date:"M d, Y H:i" }}
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <strong>Rating:</strong>
+                                                                {% if feedback.rating %}
+                                                                    {% for i in "12345" %}
+                                                                        {% if forloop.counter <= feedback.rating %}
+                                                                            <span style="color: #ffc107;">★</span>
+                                                                        {% else %}
+                                                                            <span style="color: #ddd;">★</span>
+                                                                        {% endif %}
+                                                                    {% endfor %}
+                                                                {% else %}
+                                                                    N/A
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <strong>Subject:</strong><br>
+                                                            {{ feedback.subject }}
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <strong>Message:</strong><br>
+                                                            <div class="p-3 bg-light rounded">
+                                                                {{ feedback.message|linebreaks }}
+                                                            </div>
+                                                        </div>
+                                                        {% if feedback.user %}
+                                                            <div class="mb-3">
+                                                                <strong>User Account:</strong> {{ feedback.user.email }}
+                                                            </div>
+                                                        {% endif %}
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-info text-center">
+                                <i class="fa fa-info-circle"></i> No feedback submissions yet.
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .card {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border: none;
+            border-radius: 8px;
+        }
+        
+        .table th {
+            font-weight: 600;
+            border-top: none;
+        }
+        
+        .stars {
+            font-size: 1.2rem;
+        }
+        
+        /* Fix modal backdrop issue */
+        .modal-backdrop {
+            z-index: 1040 !important;
+        }
+        
+        .modal {
+            z-index: 1050 !important;
+        }
+        
+        .modal-dialog {
+            z-index: 1060 !important;
+        }
+        
+        /* Ensure buttons are clickable */
+        .modal-content {
+            position: relative;
+            z-index: 1070 !important;
+        }
+        
+        .modal-footer .btn {
+            cursor: pointer !important;
+            pointer-events: auto !important;
+        }
+    </style>
+{% endblock %}

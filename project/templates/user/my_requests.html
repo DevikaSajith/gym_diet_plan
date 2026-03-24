@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <!-- bradcam_area_start -->
+    <div class="bradcam_area">
+            <div class="single_bradcam  d-flex align-items-center bradcam_bg_1 overlay" style="height: 200px;">
+                    <div class="container">
+                        <div class="row align-items-center justify-content-center">
+                            <div class="col-xl-9">
+                                <div class="bradcam_text text-center">
+                                    <h4 style="font-family: 'Teko', sans-serif; font-size: 45px; text-transform: uppercase;">My Diet Plan Requests</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    </div>
+    <!-- bradcam_area_end -->
+
+<div class="container-fluid pb-5 mt-5 px-lg-5">
+    {% if my_requests %}
+    <div class="card shadow-sm border-0" style="border-radius: 15px;">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0" style="border-collapse: separate !important; border-spacing: 0;">
+                    <thead style="background: #1F1F1F; color: #fff;">
+                        <tr>
+                            <th class="p-4 border-0" style="border-top-left-radius: 15px;">ID</th>
+                            <th class="p-4 border-0">DATE</th>
+                            <th class="p-4 border-0">HEALTH GOAL</th>
+                            <th class="p-4 border-0">ACTIVITY</th>
+                            <th class="p-4 border-0 text-center">STATUS</th>
+                            <th class="p-4 border-0 text-right" style="border-top-right-radius: 15px;">ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for req in my_requests %}
+                        <tr style="border-bottom: 1px solid #eee;">
+                            <td class="p-4 align-middle"><strong>#{{ req.id }}</strong></td>
+                            <td class="p-4 align-middle text-muted">{{ req.request_date|date:"M d, Y" }}</td>
+                            <td class="p-4 align-middle">
+                                <span class="badge badge-light border px-3 py-2" style="font-weight: 500;">{{ req.health_goal }}</span>
+                            </td>
+                            <td class="p-4 align-middle text-muted">{{ req.activity_level }}</td>
+                            <td class="p-4 align-middle text-center">
+                                {% if req.status == 'pending' %}
+                                    <span class="badge badge-warning text-dark px-3 py-2" style="border-radius: 20px;">PENDING</span>
+                                {% else %}
+                                    <span class="badge badge-success text-dark px-3 py-2" style="border-radius: 20px;">REPLIED</span>
+                                {% endif %}
+                            </td>
+                            <td class="p-4 align-middle text-right">
+                                <div class="btn-group">
+                                    <a href="/request_detail/{{ req.id }}/" class="genric-btn danger-border circle small">
+                                        <i class="fa fa-eye mr-1"></i> VIEW DETAIL
+                                    </a>
+                                    
+                                    {% if req.enriched_assignment %}
+                                        {% if req.enriched_assignment.is_paid %}
+                                            <a href="/chat/{{ req.enriched_assignment.id }}/" class="genric-btn info circle small ml-2">
+                                                <i class="fa fa-comments mr-1"></i> CHAT
+                                            </a>
+                                        {% else %}
+                                            <a href="/pay_subscription/{{ req.enriched_assignment.id }}/" class="genric-btn warning circle small ml-2">
+                                                <i class="fa fa-lock mr-1"></i> UNLOCK
+                                            </a>
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="text-center py-5 bg-white shadow-sm rounded">
+        <i class="fa fa-folder-open-o fa-4x text-muted mb-4 d-block"></i>
+        <h4 class="mb-4">No diet requests found!</h4>
+        <a href="/request_diet" class="boxed-btn3">SEND YOUR FIRST REQUEST</a>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .genric-btn { line-height: 38px !important; height: 40px !important; padding: 0 15px !important; display: inline-block; }
+    .table thead th { letter-spacing: 1px; font-weight: 600; font-size: 13px; }
+    .italic { font-style: italic; }
+</style>
+
+{% endblock %}

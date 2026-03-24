@@ -1,0 +1,135 @@
+{% extends 'admin/adminbase.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="row align-items-center mb-4">
+        <div class="col-md-6">
+            <h2 class="text-dark font-weight-bold">Diet Plan Management</h2>
+            <p class="text-muted">Browse and manage all available dietary plans.</p>
+        </div>
+        <div class="col-md-6 text-md-right">
+            <form action="/viewdietplan/" method="GET" class="form-inline justify-content-end">
+                <input type="text" name="search" class="form-control mr-2" placeholder="Search plans..." value="{{ search_query|default:'' }}">
+                <button type="submit" class="btn btn-primary" style="background: #F7444E; border: none;">Search</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Category Tabs -->
+    <ul class="nav nav-pills mb-4" id="categoryTabs">
+        <li class="nav-item">
+            <a class="nav-link {% if not current_category %}active{% endif %}" href="/viewdietplan/">All Plans</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if current_category == 'Weight Loss' %}active{% endif %}" href="/viewdietplan/?category=Weight Loss">Weight Loss</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if current_category == 'Muscle Gain' %}active{% endif %}" href="/viewdietplan/?category=Muscle Gain">Muscle Gain</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if current_category == 'Maintenance' %}active{% endif %}" href="/viewdietplan/?category=Maintenance">Maintenance</a>
+        </li>
+    </ul>
+
+    {% if userData %}
+        <div class="row">
+            {% for d in userData %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 shadow-sm border-0 diet-card">
+                    <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center py-3">
+                        <h5 class="m-0 text-white">{{ d.dietplan }}</h5>
+                        <span class="badge badge-primary">{{ d.category }}</span>
+                    </div>
+
+                    <div class="card-body">
+                        {% if d.description %}
+                        <p class="small text-muted mb-3 italic">"{{ d.description }}"</p>
+                        {% endif %}
+
+                        <div class="row no-gutters mb-3 text-center border rounded py-2 bg-light">
+                            <div class="col-3">
+                                <div class="small font-weight-bold text-primary">Kcal</div>
+                                <div class="font-weight-bold">{{ d.calories|default:0 }}</div>
+                            </div>
+                            <div class="col-3 border-left">
+                                <div class="small font-weight-bold text-success">P</div>
+                                <div class="font-weight-bold">{{ d.protein|default:0 }}g</div>
+                            </div>
+                            <div class="col-3 border-left">
+                                <div class="small font-weight-bold text-info">C</div>
+                                <div class="font-weight-bold">{{ d.carbs|default:0 }}g</div>
+                            </div>
+                            <div class="col-3 border-left">
+                                <div class="small font-weight-bold text-warning">F</div>
+                                <div class="font-weight-bold">{{ d.fats|default:0 }}g</div>
+                            </div>
+                        </div>
+
+                        <div class="diet-item">
+                            <span class="diet-label">Meals:</span>
+                            <span class="diet-value small">
+                                <strong>B:</strong> {{ d.breakfast|truncatechars:50 }} | 
+                                <strong>L:</strong> {{ d.lunch|truncatechars:50 }} | 
+                                <strong>D:</strong> {{ d.dinner|truncatechars:50 }}
+                            </span>
+                        </div>
+                        <div class="diet-item mt-2">
+                            <span class="diet-label">Intermediate:</span>
+                            <span class="diet-value small">{{ d.intermediate_foods|default:"None" }}</span>
+                        </div>
+                        <hr>
+                        <div class="diet-meta mt-3">
+                            <p class="mb-1 small"><i class="fa fa-tint text-primary"></i> Water: {{ d.drinking_water }}</p>
+                            <p class="mb-1 small"><i class="fa fa-bed text-info"></i> Sleep: {{ d.sleeping_hours }}</p>
+                            <p class="mb-1 small"><i class="fa fa-running text-success"></i> Activity: {{ d.activity }}</p>
+                        </div>
+
+                        {% if d.notes %}
+                        <div class="mt-3 p-2 bg-light border-left border-primary rounded small">
+                            <strong class="text-primary">Admin Note:</strong> {{ d.notes|truncatechars:80 }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="card-footer bg-white border-0 py-3">
+                        <div class="row">
+                            <div class="col-6">
+                                <a href="/deletediet?id={{ d.id }}" 
+                                   class="btn btn-outline-danger btn-sm btn-block"
+                                   onclick="return confirm('Delete this diet plan?')">
+                                    <i class="fa fa-trash"></i> Delete
+                                </a>
+                            </div>
+                            <div class="col-6">
+                                <a href="/updatedietplan?id={{ d.id }}" class="btn btn-outline-dark btn-sm btn-block">
+                                    <i class="fa fa-edit"></i> Edit
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center py-5">
+            <img src="{% static 'img/svg_icon/diet_empty.svg' %}" alt="No Plans" style="max-width: 150px; opacity: 0.5;">
+            <p class="mt-4 text-muted">No diet plans found for this category or search.</p>
+            <a href="/viewdietplan/" class="btn btn-link">Clear filters</a>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    .diet-card { border-radius: 12px; overflow: hidden; transition: transform 0.2s; }
+    .diet-card:hover { transform: translateY(-5px); }
+    .nav-pills .nav-link { color: #555; font-weight: 500; border-radius: 20px; padding: 10px 25px; margin-right: 10px; }
+    .nav-pills .nav-link.active { background-color: #F7444E; color: #fff; }
+    .diet-item { margin-bottom: 8px; display: flex; flex-direction: column; }
+    .diet-label { font-weight: bold; color: #F7444E; font-size: 0.85rem; text-transform: uppercase; }
+    .diet-value { color: #333; }
+    .badge-primary { background-color: #7ac142; }
+    .form-control:focus { border-color: #F7444E; box-shadow: 0 0 0 0.2rem rgba(247, 68, 78, 0.25); }
+</style>
+{% endblock %}

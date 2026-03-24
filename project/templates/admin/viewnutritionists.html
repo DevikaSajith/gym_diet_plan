@@ -1,0 +1,64 @@
+{% extends 'admin/adminbase.html' %}
+{% load static %}
+{% block content %}
+
+<!-- <div class="container mt-5"> -->
+    <h4 class="text-center text-black mb-4">REGISTERED Nutritionists</h4>
+
+    {% if userData %}
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover text-center">
+            <thead class="table-primary">
+                <tr>
+                    <th>Name</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Qualification</th>
+                    <th>Experience</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for n in userData %}
+                <tr>
+                    <td>{{ n.name }}</td>
+                    <td>{{ n.username }}</td>
+                    <td>{{ n.email }}</td>
+                    <td>{{ n.phone }}</td>
+                    <td>{{ n.qualification }}</td>
+                    <td>{{ n.experience }}</td>
+                    <td>
+                        {% if n.loginid.status == 'Approved' %}
+                            <span class="badge badge-success text-dark">Approved</span>
+                        {% elif n.loginid.status == 'Rejected' %}
+                            <span class="badge badge-danger text-dark">Rejected</span>
+                        {% else %}
+                            <span class="badge badge-warning text-dark">Pending</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if n.loginid.status != 'Approved' %}
+                            <a href="/approvenutritionist?id={{ n.loginid.id }}" class="btn btn-success btn-sm">Approve</a>
+                            <a href="/rejectnutritionist?id={{ n.loginid.id }}" class="btn btn-warning btn-sm">Reject</a>
+                        {% endif %}
+                        <a href="/deleteuser/{{ n.loginid.id }}/" 
+                           class="btn btn-danger btn-sm"
+                           onclick="return confirm('Are you sure?')">
+                            Delete
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+        <h5 class="text-center mt-4">No users registered</h5>
+</div>
+
+
+{% endif %}
+{% endblock %}
+</div></div>

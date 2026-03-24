@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="bradcam_area">
+        <div class="single_bradcam d-flex align-items-center bradcam_bg_1 overlay" style="height: 200px;">
+        </div>
+    </div>
+<style>
+    .success-container { text-align: center; padding: 100px 20px; }
+    .success-card { max-width: 500px; margin: 0 auto; padding: 40px; border-radius: 20px; background: #fff; box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
+    
+    /* Tick Animation */
+    .checkmark_circle { stroke-dasharray: 166; stroke-dashoffset: 166; stroke-width: 2; border-radius: 50%; stroke: #7ac142; fill: none; animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards; }
+    .checkmark { width: 100px; height: 100px; border-radius: 50%; display: block; stroke-width: 2; stroke: #fff; stroke-miterlimit: 10; margin: 10% auto; box-shadow: inset 0px 0px 0px #7ac142; animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both; }
+    .checkmark_check { transform-origin: 50% 50%; stroke-dasharray: 48; stroke-dashoffset: 48; animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards; }
+
+    @keyframes stroke { 100% { stroke-dashoffset: 0; } }
+    @keyframes scale { 0%, 100% { transform: none; } 50% { transform: scale3d(1.1, 1.1, 1); } }
+    @keyframes fill { 100% { box-shadow: inset 0px 0px 0px 50px #7ac142; } }
+
+    .success-title { font-size: 28px; font-weight: 700; color: #333; margin-top: 20px; }
+    .success-msg { color: #666; margin-bottom: 30px; }
+    .redirect-msg { font-size: 14px; color: #999; }
+</style>
+
+<div class="success-container">
+    <div class="success-card">
+        <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+            <circle class="checkmark_circle" cx="26" cy="26" r="25" fill="none"/>
+            <path class="checkmark_check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+        </svg>
+        
+        <h2 class="success-title">Payment Successful!</h2>
+        <p class="success-msg">Your chat with the nutritionist has been unlocked. You can now start communicating about your diet plan.</p>
+        
+        <div class="redirect-msg">
+            Redirecting to your requests in <span id="countdown">5</span> seconds...
+        </div>
+        
+        <a href="/my_requests" class="btn btn-primary mt-4" style="background: #7ac142; border: none; border-radius: 30px; padding: 10px 30px;">Go Now</a>
+    </div>
+</div>
+
+<script>
+    let seconds = 5;
+    const countdownEl = document.getElementById('countdown');
+    
+    const timer = setInterval(() => {
+        seconds--;
+        countdownEl.innerText = seconds;
+        if (seconds <= 0) {
+            clearInterval(timer);
+            window.location.href = '/my_requests';
+        }
+    }, 1000);
+</script>
+{% endblock %}

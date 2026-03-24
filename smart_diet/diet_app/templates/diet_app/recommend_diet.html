@@ -1,0 +1,95 @@
+{% extends 'diet_app/base.html' %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 0 auto;">
+    <h2 style="text-align: center; margin-bottom: 2rem;">Get Your Personalized Diet Plan</h2>
+
+    <div class="card">
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="grid">
+                <div>
+                    <label for="{{ form.age.id_for_label }}">Age</label>
+                    {{ form.age }}
+                </div>
+                <div>
+                    <label for="{{ form.gender.id_for_label }}">Gender</label>
+                    {{ form.gender }}
+                </div>
+            </div>
+
+            <div class="grid">
+                <div>
+                    <label for="{{ form.weight.id_for_label }}">Weight (kg)</label>
+                    {{ form.weight }}
+                </div>
+                <div>
+                    <label for="{{ form.height.id_for_label }}">Height (cm)</label>
+                    {{ form.height }}
+                </div>
+            </div>
+
+            <div class="grid">
+                <div>
+                    <label for="{{ form.disease.id_for_label }}">Conditions</label>
+                    {{ form.disease }}
+                </div>
+                <div>
+                    <label for="{{ form.activity.id_for_label }}">Activity Level</label>
+                    {{ form.activity }}
+                </div>
+            </div>
+
+            <div class="grid">
+                <div>
+                    <label for="{{ form.allergies.id_for_label }}">Allergies</label>
+                    {{ form.allergies }}
+                </div>
+                <div>
+                    <label for="{{ form.cuisine.id_for_label }}">Preferred Cuisine</label>
+                    {{ form.cuisine }}
+                </div>
+            </div>
+
+            <div>
+                <label for="{{ form.goals.id_for_label }}">Fitness Goal</label>
+                {{ form.goal }}
+            </div>
+
+            <div style="margin-top: 1rem;">
+                <label for="{{ form.exercise_hours.id_for_label }}">Weekly Exercise (Hours)</label>
+                {{ form.exercise_hours }}
+            </div>
+
+            <button type="submit" class="btn" style="width: 100%; margin-top: 1rem;">Analyze & Recommend</button>
+        </form>
+    </div>
+
+    {% if result %}
+    <div class="result-box">
+        <h3 style="color: var(--primary);">Recommendation: {{ result.result }}</h3>
+        <p><strong>Your BMI:</strong> {{ result.bmi }}</p>
+        <p style="margin-top: 1rem;"><strong>Why this plan?</strong><br>{{ result.reasoning }}</p>
+
+        {% if result.other_options %}
+        <div style="margin-top: 2rem; background: rgba(255, 255, 255, 0.05); padding: 1rem; border-radius: 8px;">
+            <h4 style="margin-bottom: 0.5rem; color: var(--text-primary);">Alternative Options</h4>
+            <p style="color: var(--text-secondary); font-size: 0.9rem;">Based on your profile, these diets might also be
+                suitable:</p>
+            <ul style="list-style: none; padding: 0; margin-top: 0.5rem;">
+                {% for diet in result.other_options %}
+                <li
+                    style="display: inline-block; background: var(--secondary); color: white; padding: 0.3rem 0.8rem; border-radius: 20px; margin-right: 0.5rem; font-size: 0.9rem;">
+                    {{ diet }}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,70 @@
+{% extends 'admin/adminbase.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2 class="text-dark font-weight-bold">Subscription Payments</h2>
+            <p class="text-muted">Monitor all chat subscription payments and total earnings.</p>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-primary text-white text-center shadow mt-3 mt-md-0">
+                <div class="card-body">
+                    <h5 class="text-white-50 small mb-1">Total Revenue</h5>
+                    <h2 class="text-white font-weight-bold mb-0">₹{{ total_revenue }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="border-0 px-4 py-3">User</th>
+                            <th class="border-0 px-4 py-3">Nutritionist</th>
+                            <th class="border-0 px-4 py-3">Amount</th>
+                            <th class="border-0 px-4 py-3">Date</th>
+                            <th class="border-0 px-4 py-3">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in payments %}
+                        <tr>
+                            <td class="px-4 py-3">
+                                <strong>{{ p.user.userregistration_set.first.name|default:p.user.email }}</strong><br>
+                                <small class="text-muted">{{ p.user.email }}</small>
+                            </td>
+                            <td class="px-4 py-3">
+                                {{ p.assignment.nutritionist.nutritionistregistration_set.first.name|default:p.assignment.nutritionist.email }}
+                            </td>
+                            <td class="px-4 py-3 font-weight-bold text-dark">₹{{ p.amount }}</td>
+                            <td class="px-4 py-3 text-muted">{{ p.timestamp|date:"M d, Y H:i" }}</td>
+                            <td class="px-4 py-3">
+                                <span class="badge badge-success px-3 py-2">Paid</span>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center py-5 text-muted">
+                                <i class="fa fa-info-circle fa-2x mb-3"></i><br>
+                                No payments recorded yet.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .table thead th { font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: #6c757d; }
+    .card { border-radius: 12px; overflow: hidden; }
+    .badge-success { background-color: #7ac142; }
+</style>
+{% endblock %}

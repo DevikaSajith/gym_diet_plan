@@ -1,0 +1,231 @@
+{% extends 'nutritionists/base.html' %}
+{% load static %}
+{% block header_area %}
+    <div class="bradcam_area">
+        <div class="single_bradcam  d-flex align-items-center bradcam_bg_1 overlay" style="height: 200px;">
+            <div class="container">
+                <div class="row align-items-center justify-content-center">
+                    <div class="col-xl-9">
+                        <div class="bradcam_text text-center">
+                            <h4>Suggest Diet Plan</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+    
+    <div class="row">
+        <!-- Request Details -->
+        <div class="col-md-4">
+            <div class="card bg-light mb-3">
+                <div class="card-header">User Request</div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ request_obj.user.userregistration_set.first.name }}</h5>
+                    <p class="card-text">
+                        <strong>Goal:</strong> {{ request_obj.health_goal }}<br>
+                        <strong>Age:</strong> {{ request_obj.age }} | <strong>Gender:</strong> {{ request_obj.gender }}<br>
+                        <strong>Height:</strong> {{ request_obj.height }} cm | <strong>Weight:</strong> {{ request_obj.weight }} kg<br>
+                        <strong>Food Pref:</strong> <span class="text-primary">{{ request_obj.food_preference }}</span><br>
+                        <strong>System Rec:</strong> <span class="text-info font-weight-bold">{{ request_obj.calculated_needs }}</span>
+                    </p>
+                    <hr>
+                    <p><strong>Allergies:</strong><br> {{ request_obj.allergies|default:"None" }}</p>
+                    <p><strong>Medical Conditions:</strong><br> {{ request_obj.medical_conditions|default:"None" }}</p>
+                    <p><strong>Daily Routine:</strong><br> {{ request_obj.daily_routine|default:"Not provided" }}</p>
+                    <p><strong>Dietary History:</strong><br> {{ request_obj.dietary_history|default:"Not provided" }}</p>
+                    <hr>
+                    <p><strong>Specific Note:</strong><br> {{ request_obj.description }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Suggestion Form -->
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">Select a Plan to Assign</div>
+                <div class="card-body">
+                    <!-- Toggle Buttons -->
+                    <div class="mb-3 text-center">
+                        <button type="button" class="btn btn-outline-primary active" id="btnExisting" onclick="showSection('existing')">Select Existing Plan</button>
+                        <button type="button" class="btn btn-outline-primary" id="btnCustom" onclick="showSection('custom')">Create Custom Plan</button>
+                    </div>
+
+                    <form method="POST" action="/suggest_plan/" id="assignForm">
+                        {% csrf_token %}
+                        <input type="hidden" name="request_id" value="{{ request_obj.id }}">
+                        <input type="hidden" name="action" id="formAction" value="assign_existing">
+                        
+                        <!-- Section: Assign Existing -->
+                        <div id="existingPlanSection">
+                            <div class="form-group">
+                                <label>Filter by Category</label>
+                                <select id="categoryFilter" class="form-control" onchange="filterPlans()">
+                                    <option value="All">All Categories</option>
+                                    <option value="Weight Loss" {% if request_obj.health_goal == 'Weight Loss' %}selected{% endif %}>Weight Loss</option>
+                                    <option value="Muscle Gain" {% if request_obj.health_goal == 'Muscle Gain' %}selected{% endif %}>Muscle Gain</option>
+                                    <option value="Maintenance" {% if request_obj.health_goal == 'Maintenance' %}selected{% endif %}>Maintenance</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Choose Diet Plan</label>
+                                <div class="list-group" id="planList">
+                                    {% for plan in diet_plans %}
+                                    <div class="list-group-item list-group-item-action plan-item" data-category="{{ plan.category }}">
+                                        <div class="d-flex w-100 justify-content-between align-items-center">
+                                            <h6 class="mb-1 font-weight-bold">
+                                                <input type="radio" name="diet_plan_id" value="{{ plan.id }}"> 
+                                                {{ plan.dietplan }}
+                                            </h6>
+                                            <span class="badge badge-secondary">{{ plan.category }}</span>
+                                        </div>
+                                        {% if plan.description %}
+                                        <p class="mb-1 small text-muted italic">"{{ plan.description|truncatechars:100 }}"</p>
+                                        {% endif %}
+                                        <div class="d-flex small text-primary font-weight-bold">
+                                            <span class="mr-2">Kcal: {{ plan.calories }}</span>
+                                            <span class="mr-2">P: {{ plan.protein }}g</span>
+                                            <span class="mr-2">C: {{ plan.carbs }}g</span>
+                                            <span>F: {{ plan.fats }}g</span>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                <div id="noPlansMessage" class="alert alert-warning mt-3" style="display: none;">
+                                    No diet plans found for this category. Please select "All Categories" or add a new plan.
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Additional Comments/Instructions</label>
+                                <textarea name="comments" class="form-control" rows="3" placeholder="Add specific advice for this user..."></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Section: Create Custom -->
+                        <div id="customPlanSection" style="display: none;">
+                            <h5 class="text-primary mb-3">Create New Personalized Plan</h5>
+                            
+                            <div class="form-group">
+                                <label class="font-weight-bold">Plan Description</label>
+                                <textarea name="description" class="form-control" rows="2" placeholder="Summarize focus (e.g., Low carb, high protein for weight loss)" required>{{ previous_plan.description }}</textarea>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 form-group">
+                                    <label class="font-weight-bold">Breakfast <span class="text-danger">*</span></label>
+                                    <textarea name="breakfast" class="form-control" rows="3" placeholder="E.g., Oatmeal with fruits, Green tea" required>{{ previous_plan.breakfast }}</textarea>
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label class="font-weight-bold">Lunch <span class="text-danger">*</span></label>
+                                    <textarea name="lunch" class="form-control" rows="3" placeholder="E.g., Grilled chicken, Brown rice, Salad" required>{{ previous_plan.lunch }}</textarea>
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label class="font-weight-bold">Dinner <span class="text-danger">*</span></label>
+                                    <textarea name="dinner" class="form-control" rows="3" placeholder="E.g., Fish curry, Quinoa, Steamed vegetables" required>{{ previous_plan.dinner }}</textarea>
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    <label class="font-weight-bold">Snacks & Intermediate Foods</label>
+                                    <textarea name="intermediate_foods" class="form-control" rows="3" placeholder="E.g., Nuts, Fruits, Protein shake">{{ previous_plan.intermediate_foods }}</textarea>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-md-4 form-group">
+                                    <label class="small font-weight-bold">Daily Water Intake</label>
+                                    <input type="text" name="drinking_water" class="form-control" value="{% if previous_plan %}{{ previous_plan.drinking_water }}{% else %}3-4 Liters{% endif %}" placeholder="E.g., 3-4 Liters">
+                                </div>
+                                <div class="col-md-4 form-group">
+                                    <label class="small font-weight-bold">Sleep Duration</label>
+                                    <input type="text" name="sleeping_hours" class="form-control" value="{% if previous_plan %}{{ previous_plan.sleeping_hours }}{% else %}7-8 Hours{% endif %}" placeholder="E.g., 7-8 Hours">
+                                </div>
+                                <div class="col-md-4 form-group">
+                                    <label class="small font-weight-bold">Activity Recommendations</label>
+                                    <input type="text" name="activity" class="form-control" value="{{ previous_plan.activity }}" placeholder="E.g., 30 min cardio daily">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="font-weight-bold">Nutritionist's Notes & Special Instructions</label>
+                                <textarea name="notes" class="form-control" rows="3" placeholder="Add any specific advice, precautions, or tips for the user...">{{ previous_plan.notes }}</textarea>
+                            </div>
+
+                            <div class="alert alert-info py-2">
+                                <i class="fa fa-info-circle"></i> This plan will be saved as <strong>"Custom Plan for {{ request_obj.user.userregistration_set.first.name }}"</strong> and assigned immediately.
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-block" id="submitBtn">Assign Plan</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function showSection(section) {
+    var existingSec = document.getElementById("existingPlanSection");
+    var customSec = document.getElementById("customPlanSection");
+    var btnExisting = document.getElementById("btnExisting");
+    var btnCustom = document.getElementById("btnCustom");
+    var actionInput = document.getElementById("formAction");
+    var submitBtn = document.getElementById("submitBtn");
+
+    if (section === 'existing') {
+        existingSec.style.display = 'block';
+        customSec.style.display = 'none';
+        btnExisting.classList.add('active');
+        btnCustom.classList.remove('active');
+        actionInput.value = 'assign_existing';
+        submitBtn.innerHTML = "Assign Selected Plan";
+    } else {
+        existingSec.style.display = 'none';
+        customSec.style.display = 'block';
+        btnExisting.classList.remove('active');
+        btnCustom.classList.add('active');
+        actionInput.value = 'create_custom';
+        submitBtn.innerHTML = "Create & Assign Plan";
+    }
+}
+
+function filterPlans() {
+    var category = document.getElementById("categoryFilter").value;
+    var plans = document.getElementsByClassName("plan-item");
+    var hasVisible = false;
+    
+    for (var i = 0; i < plans.length; i++) {
+        if (category === "All" || plans[i].getAttribute("data-category") === category) {
+            plans[i].style.display = "block";
+            hasVisible = true;
+        } else {
+            plans[i].style.display = "none";
+        }
+    }
+    
+    var msg = document.getElementById("noPlansMessage");
+    if (!hasVisible) {
+        msg.style.display = "block";
+    } else {
+        msg.style.display = "none";
+    }
+}
+// Initial run
+window.onload = function() {
+    filterPlans();
+    {% if previous_plan %}
+    setTimeout(function() {
+        showSection('custom');
+    }, 100);
+    {% endif %}
+};
+</script>
+
+{% endblock %}

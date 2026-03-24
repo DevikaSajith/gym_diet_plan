@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <!-- bradcam_area_start -->
+    <div class="bradcam_area">
+        <div class="single_bradcam d-flex align-items-center bradcam_bg_1 overlay" style="height: 250px; padding-top: 80px;">
+            <div class="container">
+                <div class="row align-items-center justify-content-center">
+                    <div class="col-xl-9">
+                        <div class="bradcam_text text-center">
+                            <h4 style="font-family: 'Teko', sans-serif; font-size: 45px; color: #fff; text-transform: uppercase;">AI Calorie Finder</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- bradcam_area_end -->
+
+<div class="container pb-5 mt-5">
+    
+    <div class="row justify-content-center">
+        <div class="col-xl-6 col-lg-8 col-md-10">
+            <div class="login-screen shadow-lg" style="background: #fff; padding: 40px; border-radius: 15px; border: 1px solid #eee;">
+                <div class="login-box">
+                    <h4 class="text-center text-black mb-5" style="font-family: 'Teko', sans-serif; font-size: 36px; letter-spacing: 2px;">CHECK FOOD CALORIES</h4>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group mb-4">
+                            <label class="text-dark font-weight-bold mb-2">{{ form.food_item.label }}</label>
+                            {{ form.food_item }}
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <label class="text-dark font-weight-bold mb-2">{{ form.weight.label }}</label>
+                            {{ form.weight }}
+                        </div>
+
+                        <div class="actions text-center mt-3">
+                            <button type="submit" class="boxed-btn3" style="width: 100%; font-size: 20px; text-transform: uppercase;">Find Calories</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% if result %}
+    <div class="row justify-content-center mt-5">
+        <div class="col-xl-6 col-lg-8 col-md-10">
+            <div class="shadow-lg p-5 text-center" style="background: #fff; border-radius: 15px; border-top: 10px solid #FF1414;">
+                <h2 style="font-family: 'Teko', sans-serif; font-size: 48px; color: #FF1414;">{{ result.calories }} kcal</h2>
+                <p class="text-dark h5 mt-3">
+                    in {{ result.weight }}g of <strong class="text-uppercase">{{ result.food }}</strong>
+                </p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if suggestions %}
+    <div class="row justify-content-center mt-5">
+        <div class="col-xl-8 col-lg-10 col-md-12">
+            <div class="p-4" style="background: #f8f9fa; border-radius: 15px;">
+                <h4 class="text-center mb-3">Did you mean?</h4>
+                <p class="text-center text-muted mb-4">We couldn't find an exact match, but found these similar items:</p>
+                <div class="row">
+                    {% for item in suggestions %}
+                    <div class="col-md-4 col-sm-6 mb-3">
+                        <form method="post" style="margin: 0;">
+                            {% csrf_token %}
+                            <input type="hidden" name="food_item" value="{{ item }}">
+                            <input type="hidden" name="weight" value="{{ form.weight.value|default:'100' }}">
+                            <button type="submit" class="boxed-btn3 w-100" style="padding: 10px 0; font-size: 14px; background: #333; color: #fff;">
+                                {{ item|title }}
+                            </button>
+                        </form>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if error %}
+    <div class="row justify-content-center mt-5">
+        <div class="col-xl-6 col-lg-8 col-md-10">
+            <div class="alert alert-danger text-center shadow-sm" role="alert">
+                <strong>Error:</strong> {{ error }}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+<style>
+    /* Reuse styles */
+    input[type="text"], input[type="number"] {
+        width: 100%;
+        height: 50px;
+        border-radius: 10px;
+        border: 1px solid #ddd;
+        padding: 0 15px;
+    }
+    input:focus {
+        border-color: #FF1414;
+        outline: none;
+    }
+</style>
+{% endblock %}
