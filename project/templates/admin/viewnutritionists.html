@@ -16,6 +16,7 @@
                     <th>Phone</th>
                     <th>Qualification</th>
                     <th>Experience</th>
+                    <th>Certificate</th>
                     <th>Status</th>
                     <th>Action</th>
                 </tr>
@@ -29,6 +30,13 @@
                     <td>{{ n.phone }}</td>
                     <td>{{ n.qualification }}</td>
                     <td>{{ n.experience }}</td>
+                    <td>
+                        {% if n.certificate %}
+                            <a href="{{ n.certificate.url }}" target="_blank" class="btn btn-info btn-sm">View</a>
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </td>
                     <td>
                         {% if n.loginid.status == 'Approved' %}
                             <span class="badge badge-success text-dark">Approved</span>

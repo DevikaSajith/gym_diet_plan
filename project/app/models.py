@@ -30,6 +30,7 @@ class NutritionistRegistration(models.Model):
     experience = models.CharField(max_length=100, null=True, blank=True)
     phone = models.BigIntegerField(null=True, blank=True)
     password = models.CharField(max_length=50, null=True, blank=True)
+    certificate = models.FileField(upload_to='certificates/', null=True, blank=True)
     loginid = models.ForeignKey(Login, on_delete=models.CASCADE, null=True)
 
 

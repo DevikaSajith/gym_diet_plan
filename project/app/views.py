@@ -191,6 +191,7 @@ def nutritionreg(request):
         experience=request.POST['experience']
         password=request.POST['user_password']
         confirmpassword=request.POST['user_confirm_password']
+        certificate=request.FILES.get('certificate')
         if password==confirmpassword:
             if Login.objects.filter(email=email).exists():
                 messages.error(request, "Email already registered... Please Login")
@@ -204,7 +205,8 @@ def nutritionreg(request):
                 )
                 NLogin.save()
                 userReg = NutritionistRegistration.objects.create(
-                    name=name, username=username, email=email, phone=phone, qualification=qualification, experience=experience, password=password, loginid=NLogin
+                    name=name, username=username, email=email, phone=phone, qualification=qualification, 
+                    experience=experience, password=password, certificate=certificate, loginid=NLogin
                 )
                 userReg.save()
                 messages.success(request, "Nutritionist Registration Success. Waiting for approval!")
